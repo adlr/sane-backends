@@ -71,7 +71,7 @@
 #include "../include/sane/sanei.h"
 #include "../include/sane/saneopts.h"
 
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 #include <asm/types.h>		/* XXX glibc */
 
 #define BACKEND_NAME v4l

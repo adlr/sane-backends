@@ -48,7 +48,7 @@
 #include <string.h>
 #include <errno.h>
 #ifdef HAVE_NETINET_IN_H
-# include <netinet/in.h>
+/*# include <netinet/in.h>*/
 #endif /* HAVE_NETINET_IN_H */
 
 #include "byteorder.h"

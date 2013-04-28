@@ -78,7 +78,7 @@
 # else
 #  include <signal.h>
 # endif
-# include <sys/ioctl.h>
+/*# include <sys/ioctl.h>*/
 # ifdef HAVE_SYS_IO_H
 #  include <sys/io.h>
 # endif

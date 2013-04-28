@@ -51,7 +51,7 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <math.h>
-#include <poll.h>
+/*#include <poll.h>*/
 #include <sys/types.h>
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
@@ -215,7 +215,7 @@ print_params(const SANE_Parameters params)
 /****************************************************************************
  *   Low-level Network communication functions
  ****************************************************************************/
-
+#if 0
 
 #define MAGICOLOR_SNMP_SYSDESCR_OID  ".1.3.6.1.2.1.1.1.0"
 #define MAGICOLOR_SNMP_SYSOBJECT_OID ".1.3.6.1.2.1.1.2.0"
@@ -363,7 +363,7 @@ sanei_magicolor_net_close(struct Magicolor_Scanner *s)
 	return status;
 }
 
-
+#endif
 
 /****************************************************************************
  *   Low-level USB communication functions

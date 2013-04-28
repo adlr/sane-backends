@@ -66,7 +66,7 @@
 #include <fcntl.h>
 #include <limits.h>
 #include "../include/sane/sanei_jpeg.h"
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 
 #include "../include/sane/sane.h"
 #include "../include/sane/sanei.h"

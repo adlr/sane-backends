@@ -9,7 +9,7 @@
  * More info at http://www.sane-project.org/license.html
  *
  */
-
+#if 0
 #undef	BACKEND_NAME
 #define	BACKEND_NAME xerox_mfp
 #define DEBUG_DECLARE_ONLY
@@ -180,3 +180,4 @@ tcp_configure_device (const char *devname, SANE_Status (*list_one)(SANE_String_C
 }
 
 /* xerox_mfp-tcp.c */
+#endif

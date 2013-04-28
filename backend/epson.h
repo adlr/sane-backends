@@ -53,7 +53,7 @@
 #ifndef epson_h
 #define epson_h
 
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 
 #include <sys/types.h>
 

@@ -290,7 +290,7 @@ typedef enum
   BJNP_POLL_STARTED = 1,
   BJNP_POLL_STATUS_RECEIVED = 2
 } BJNP_polling_status_e;
-
+/*
 typedef union
 {
   struct sockaddr_storage storage;
@@ -305,7 +305,7 @@ typedef enum
   BJNP_ADDRESS_IS_GLOBAL = 1,
   BJNP_ADDRESS_HAS_FQDN = 2
 } bjnp_address_type_t;
-
+*/
 
 /*
  * Device information for opened devices

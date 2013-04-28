@@ -19,7 +19,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 
 #include "../include/sane/sane.h"
 #include "../include/sane/saneopts.h"

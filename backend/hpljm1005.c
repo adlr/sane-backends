@@ -59,7 +59,7 @@
 #include  <unistd.h>
 #include  <errno.h>
 #include  <stdint.h>
-#include <netinet/in.h>
+/*#include <netinet/in.h>*/
 #define  BACKEND_NAME hpljm1005
 #include  "../include/sane/sanei_backend.h"
 #include  "../include/sane/sanei_usb.h"

@@ -89,6 +89,7 @@
 
  ***************************************************************************/
 
+#if 0
 #include "../include/sane/config.h"
 
 #include <stdlib.h>
@@ -2758,3 +2759,4 @@ sane_get_select_fd (SANE_Handle UNUSEDARG handle, SANE_Int UNUSEDARG * fd)
 {
   return SANE_STATUS_UNSUPPORTED;
 }
+#endif

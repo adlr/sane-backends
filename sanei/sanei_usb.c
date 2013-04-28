@@ -222,6 +222,10 @@ cmsg;
 #include <kernel/OS.h>
 #endif /* __linux__ */
 
+#ifdef FD_CLOEXEC
+#undef FD_CLOEXEC
+#endif
+
 /* Debug level from sanei_init_debug */
 static SANE_Int debug_level;
 

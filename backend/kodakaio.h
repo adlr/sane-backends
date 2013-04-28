@@ -26,7 +26,7 @@
 #define BACKEND_NAME kodakaio
 #define DEBUG_NOT_STATIC
 
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 
 #ifdef HAVE_STDDEF_H
 #include <stddef.h>

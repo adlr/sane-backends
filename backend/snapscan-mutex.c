@@ -95,8 +95,8 @@ static void snapscani_mutex_unlock(snapscan_mutex_t* sem_id)
 
 #else /* defined USE_PTHREAD || defined HAVE_OS2_H */
 
-#include <sys/ipc.h>
-#include <sys/sem.h>
+/*#include <sys/ipc.h>
+  #include <sys/sem.h>*/
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -115,8 +115,8 @@ union semun {
 };
 #endif /* defined HAVE_UNION_SEMUN */
 
-static struct sembuf sem_wait = { 0, -1, 0 };
-static struct sembuf sem_signal = { 0, 1, 0 };
+/*static struct sembuf sem_wait = { 0, -1, 0 };
+  static struct sembuf sem_signal = { 0, 1, 0 };*/
 
 static unsigned int snapscani_bernstein(const unsigned char* str)
 {
@@ -130,7 +130,7 @@ static unsigned int snapscani_bernstein(const unsigned char* str)
     }
     return hash;
 } 
-
+#if 0
 static int snapscani_mutex_open(snapscan_mutex_t* sem_id, const char* dev)
 {
     static const char *me = "snapscani_mutex_open";
@@ -169,15 +169,16 @@ static void snapscani_mutex_close(snapscan_mutex_t* sem_id)
     static union semun dummy_semun_arg;
     semctl(*sem_id, 0, IPC_RMID, dummy_semun_arg);
 }
+#endif
 
 static void snapscani_mutex_lock(snapscan_mutex_t* sem_id)
 {
-    semop(*sem_id, &sem_wait, 1);
+  /*semop(*sem_id, &sem_wait, 1);*/
 }
 
 static void snapscani_mutex_unlock(snapscan_mutex_t* sem_id)
 {
-    semop(*sem_id, &sem_signal, 1);
+  /* semop(*sem_id, &sem_signal, 1);*/
 }
 
 #endif /* defined USE_PTHREAD || defined HAVE_OS2_H */

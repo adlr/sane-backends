@@ -41,6 +41,8 @@
 
 #include "../include/sane/config.h"
 
+#ifdef WITH_AVAHI
+
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -230,3 +232,4 @@ sanei_udp_recvfrom(int fd, u_char * buf, int count, char **fromp)
 	return l;
 }
 
+#endif

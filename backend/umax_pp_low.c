@@ -81,7 +81,7 @@
 #endif
 
 #ifdef HAVE_LINUX_PPDEV_H
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 #include <linux/parport.h>
 #include <linux/ppdev.h>
 #endif

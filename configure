@@ -659,10 +659,10 @@ LIBUSB_1_0_LIBS
 LIBUSB_1_0_CFLAGS
 SYSTEMD_LIBS
 ALLOCA
-LIBOBJS
 SOCKET_LIBS
 RESMGR_LIBS
 SNMP_CONFIG_PATH
+LIBOBJS
 AVAHI_LIBS
 AVAHI_CFLAGS
 LIBV4L_LIBS
@@ -7722,6 +7722,50 @@ $as_echo "yes" >&6; }
 $as_echo "#define WITH_AVAHI 1" >>confdefs.h
 
 fi
+
+save_LIBS="$LIBS"
+LIBS="$LIBS $SOCKET_LIBS"
+for ac_func in inet_addr inet_aton inet_ntoa
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
+ac_fn_c_check_func "$LINENO" "inet_ntop" "ac_cv_func_inet_ntop"
+if test "x$ac_cv_func_inet_ntop" = xyes; then :
+  $as_echo "#define HAVE_INET_NTOP 1" >>confdefs.h
+
+else
+  case " $LIBOBJS " in
+  *" inet_ntop.$ac_objext "* ) ;;
+  *) LIBOBJS="$LIBOBJS inet_ntop.$ac_objext"
+ ;;
+esac
+
+fi
+
+ac_fn_c_check_func "$LINENO" "inet_pton" "ac_cv_func_inet_pton"
+if test "x$ac_cv_func_inet_pton" = xyes; then :
+  $as_echo "#define HAVE_INET_PTON 1" >>confdefs.h
+
+else
+  case " $LIBOBJS " in
+  *" inet_pton.$ac_objext "* ) ;;
+  *) LIBOBJS="$LIBOBJS inet_pton.$ac_objext"
+ ;;
+esac
+
+fi
+
+
+LIBS="$save_LIBS"
+
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sane_init in -lsane" >&5
@@ -8902,49 +8946,6 @@ fi
 
 SOCKET_LIBS="$SOCKET_LIB $NSL_LIB $BIND_LIB $RESOLV_LIB"
 
-
-save_LIBS="$LIBS"
-LIBS="$LIBS $SOCKET_LIBS"
-for ac_func in inet_addr inet_aton inet_ntoa
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-ac_fn_c_check_func "$LINENO" "inet_ntop" "ac_cv_func_inet_ntop"
-if test "x$ac_cv_func_inet_ntop" = xyes; then :
-  $as_echo "#define HAVE_INET_NTOP 1" >>confdefs.h
-
-else
-  case " $LIBOBJS " in
-  *" inet_ntop.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS inet_ntop.$ac_objext"
- ;;
-esac
-
-fi
-
-ac_fn_c_check_func "$LINENO" "inet_pton" "ac_cv_func_inet_pton"
-if test "x$ac_cv_func_inet_pton" = xyes; then :
-  $as_echo "#define HAVE_INET_PTON 1" >>confdefs.h
-
-else
-  case " $LIBOBJS " in
-  *" inet_pton.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS inet_pton.$ac_objext"
- ;;
-esac
-
-fi
-
-
-LIBS="$save_LIBS"
 
 if test "$ac_cv_header_be_kernel_OS_h" = "yes" ; then
         ac_cv_func_getaddrinfo=no

@@ -240,6 +240,11 @@ extern SANE_Status sane_get_select_fd (SANE_Handle handle,
 				       SANE_Int * fd);
 extern SANE_String_Const sane_strstatus (SANE_Status status);
 
+#ifndef HAVE_SYSLOG
+#define syslog(__PRIORITY, __FMT, args...) printf( __FMT, ## args )
+#define LOG_DEBUG 1
+#endif
+
 #ifdef __cplusplus
 }
 #endif 

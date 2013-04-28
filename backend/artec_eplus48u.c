@@ -85,8 +85,8 @@ Updates (C) 2001 by Henning Meier-Geinitz.
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
-
+/*#include <sys/ioctl.h>*/
+#include <sys/signal.h>
 
 #include "../include/sane/sane.h"
 #include "../include/sane/sanei.h"

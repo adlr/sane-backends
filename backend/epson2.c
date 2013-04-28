@@ -444,6 +444,7 @@ open_scanner(Epson_Scanner *s)
 	}
 
 	if (s->hw->connection == SANE_EPSON_NET) {
+#if 0
 		unsigned char buf[5];
 
 		/* device name has the form net:ipaddr */
@@ -474,6 +475,7 @@ open_scanner(Epson_Scanner *s)
 
 			DBG(32, "scanner locked\n");
 		}
+#endif
 		
 	} else if (s->hw->connection == SANE_EPSON_SCSI)
 		status = sanei_scsi_open(s->hw->sane.name, &s->fd,

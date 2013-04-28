@@ -1,6 +1,6 @@
 #include "../include/sane/config.h"
 
-#ifndef HAVE_INET_NTOP
+#if (!defined HAVE_INET_NTOP) && defined WITH_AVAHI
 
 #include <string.h>
 #include <sys/types.h>

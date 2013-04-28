@@ -56,6 +56,14 @@
 #include "../include/sane/sanei_debug.h"
 #include "../include/sane/sanei_magic.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#ifndef M_PI_2
+#define M_PI_2 (M_PI/2)
+#endif
+
 /* prototypes for utility functions defined at bottom of file */
 int * sanei_magic_getTransY (
   SANE_Parameters * params, int dpi, SANE_Byte * buffer, int top);

@@ -1,6 +1,6 @@
 #include "../include/sane/config.h"
 
-#ifndef HAVE_INET_PTON
+#if (!defined HAVE_INET_PTON) && defined WITH_AVAHI
 
 #include <string.h>
 #include <sys/types.h>

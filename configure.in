@@ -140,6 +140,15 @@ AC_ARG_ENABLE(avahi,
 if test "$enable_avahi" = "yes"; then
   PKG_CHECK_MODULES(AVAHI, [ avahi-client >= 0.6.24 ],
                     [AC_DEFINE(WITH_AVAHI, 1, [define if Avahi support is enabled for saned and the net backend])], enable_avahi=no)
+
+dnl define HAVE_* values for network functions.  This may require
+dnl SOCKET_LIBS so set LIBS temporarily.
+save_LIBS="$LIBS"
+LIBS="$LIBS $SOCKET_LIBS"
+AC_CHECK_FUNCS(inet_addr inet_aton inet_ntoa)
+AC_REPLACE_FUNCS(inet_ntop inet_pton)
+LIBS="$save_LIBS"
+
 fi
 
 dnl check sane to make sure we don't have two installations
@@ -284,14 +293,6 @@ dnl Group related network libraries together so they can always be linked
 dnl in.
 SOCKET_LIBS="$SOCKET_LIB $NSL_LIB $BIND_LIB $RESOLV_LIB"
 AC_SUBST(SOCKET_LIBS)
-
-dnl define HAVE_* values for network functions.  This may require
-dnl SOCKET_LIBS so set LIBS temporarily.
-save_LIBS="$LIBS"
-LIBS="$LIBS $SOCKET_LIBS"
-AC_CHECK_FUNCS(inet_addr inet_aton inet_ntoa)
-AC_REPLACE_FUNCS(inet_ntop inet_pton)
-LIBS="$save_LIBS"
 
 if test "$ac_cv_header_be_kernel_OS_h" = "yes" ; then
     dnl those are known to be broken in BeOS (BONE)

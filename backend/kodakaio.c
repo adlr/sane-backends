@@ -179,7 +179,7 @@ normal levels. This system is a plan rather than a reality
 #include <errno.h>
 #include <sys/time.h>
 #include <math.h>
-#include <poll.h>
+/*#include <poll.h>*/
 #include <time.h>
 
 #if WITH_AVAHI
@@ -658,7 +658,7 @@ print_status(KodakAio_Scanner *s,int level)
 
 /****************************************************************************
  *   Low-level Network communication functions ****************************************************************************/
-
+#if 0
 /* We don't have a packet wrapper, which holds packet size etc., so we
    don't have to use a *read_raw and a *_read function... */
 static int
@@ -742,7 +742,7 @@ sanei_kodakaio_net_close(struct KodakAio_Scanner *s)
 	/* Does nothing - maybe should close the socket ? */
 	return SANE_STATUS_GOOD;
 }
-
+#endif
 
 /****************************************************************************
  *   Low-level USB communication functions ****************************************************************************/

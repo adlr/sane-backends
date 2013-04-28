@@ -56,7 +56,7 @@
 #include "pixma_rename.h"
 #include "pixma_common.h"
 #include "pixma_io.h"
-
+#include "../include/sane/sanei_backend.h"
 
 #ifdef __GNUC__
 # define UNUSED(v) (void) v

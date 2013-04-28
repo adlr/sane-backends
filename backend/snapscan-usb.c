@@ -510,7 +510,8 @@ static SANE_Status usb_request_sense(SnapScan_Scanner *pss) {
     return status;
 }
 
-#if defined USE_PTHREAD || defined HAVE_OS2_H || defined __BEOS__
+#if 1
+/*defined USE_PTHREAD || defined HAVE_OS2_H || defined __BEOS__*/
 static SANE_Status snapscani_usb_shm_init(void)
 {
     unsigned int shm_size = sizeof(struct urb_counters_t);

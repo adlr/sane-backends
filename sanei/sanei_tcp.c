@@ -41,6 +41,8 @@
 
 #include "../include/sane/config.h"
 
+#ifdef WITH_AVAHI
+
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -134,3 +136,5 @@ sanei_tcp_read(int fd, u_char * buf, int count)
 	}
 	return bytes_recv;
 }
+
+#endif

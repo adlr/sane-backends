@@ -59,7 +59,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <math.h>
-#include <netinet/in.h>		/* for htons */
+/*#include <netinet/in.h>*/		/* for htons */
 #include <string.h>
 
 

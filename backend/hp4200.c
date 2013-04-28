@@ -51,7 +51,7 @@ TODO:
 
 #include "../include/sane/config.h"
 
-#include <sys/ioctl.h>
+/*#include <sys/ioctl.h>*/
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>

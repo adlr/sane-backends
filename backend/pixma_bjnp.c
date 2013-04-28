@@ -39,6 +39,7 @@
    whether to permit this exception to apply to your modifications.
    If you do not wish that, delete this exception notice.
 */
+#if 0
 #undef BACKEND_NAME
 #define BACKEND_NAME bjnp
 
@@ -73,12 +74,12 @@
 #include <sys/socket.h>
 #endif
 #ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
+/*#include <netinet/in.h>*/
 #endif
-#include <netinet/tcp.h>
+/*#include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <net/if.h>
+#include <net/if.h>*/
 #ifdef HAVE_IFADDRS_H
 #include <ifaddrs.h>
 #endif
@@ -177,7 +178,7 @@ bjnp_hexdump (int level, const void *d_, unsigned len)
   if (len > plen)
     bjnp_dbg(level, "......\n");
 }
-
+#if 0
 static int sa_is_equal( const bjnp_sockaddr_t * sa1, const bjnp_sockaddr_t * sa2)
 {
   if ((sa1 == NULL) || (sa2 == NULL) )
@@ -270,6 +271,7 @@ get_address_info ( const bjnp_sockaddr_t *addr, char * addr_string, int *port)
       *port = 0;
     }
 }
+#endif
 
 static int
 parse_IEEE1284_to_model (char *scanner_id, char *model)
@@ -2354,3 +2356,4 @@ sanei_bjnp_read_int (SANE_Int dn, SANE_Byte * buffer, size_t * size)
   return SANE_STATUS_EOF;
 #endif
 }
+#endif
