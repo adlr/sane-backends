@@ -1,3 +1,5 @@
+#ifndef SANEI_BACKEND_H__
+#define SANEI_BACKEND_H__ 1
 /** @file sanei_backend.h
  * Compatibility header file for backends
  *
@@ -104,12 +106,19 @@
 #  undef SIG_SETMASK
 # endif
 
+struct sigvec {
+  void (*sa_handler)(int); /* Signal disposition */
+  int    sa_mask;          /* Signals to be blocked in handler */
+  int    sa_flags;         /* Flags */
+};
+int sigaction(int sig, struct sigvec *vec, struct sigvec *ovec);
+
 # define sigset_t               int
-# define sigemptyset(set)       do { *(set) = 0; } while (0)
+# define sigemptyset(set)       ( *(set) = 0 )
 # define sigfillset(set)        do { *(set) = ~0; } while (0)
 # define sigaddset(set,signal)  do { *(set) |= sigmask (signal); } while (0)
 # define sigdelset(set,signal)  do { *(set) &= ~sigmask (signal); } while (0)
-# define sigaction(sig,new,old) sigvec (sig,new,old)
+/*# define sigaction(sig,new,old) sigvec (sig,new,old)*/
 
   /* Note: it's not safe to just declare our own "struct sigaction" since
      some systems (e.g., some versions of OpenStep) declare that structure,
@@ -118,6 +127,8 @@
 # define SIG_BLOCK      1
 # define SIG_UNBLOCK    2
 # define SIG_SETMASK    3
+
+
 #endif /* !HAVE_SIGPROCMASK */
 /* @} */
 
@@ -185,3 +196,5 @@ typedef union
 Option_Value;
 #define SANE_OPTION 1
 #endif
+
+#endif  /* include guard */

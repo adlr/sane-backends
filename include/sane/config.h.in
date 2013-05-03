@@ -647,10 +647,11 @@ int isfdtype(int fd, int fdtype);
 #endif
 
 /* Prototype for sigprocmask */
-#ifndef HAVE_SIGPROCMASK
+/*#ifndef HAVE_SIGPROCMASK
 #define sigprocmask sanei_sigprocmask
 int sigprocmask (int how, const unsigned long *new, unsigned long *old);
 #endif
+*/
 
 /* Prototype for snprintf */
 #ifndef HAVE_SNPRINTF
