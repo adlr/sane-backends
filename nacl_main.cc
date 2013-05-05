@@ -86,12 +86,27 @@ class HelloTutorialInstance : public pp::Instance {
   /// with the parameter.
   /// @param[in] var_message The message posted by the browser.
   virtual void HandleMessage(const pp::Var& var_message) {
-    SANE_Status x = sane_init(NULL, NULL);
-    if (x != SANE_STATUS_GOOD) {
+    printf("about to call sane_init\n");
+    SANE_Status rc = sane_init(NULL, NULL);
+    if (rc != SANE_STATUS_GOOD) {
       PostString("sane_init failed");
       return;
     }
-    PostString("sane_init success");
+    PostString("sane_init success2");
+    const SANE_Device** device_list;
+    rc = sane_get_devices(&device_list, SANE_TRUE);  // true = local only
+    if (rc != SANE_STATUS_GOOD) {
+      PostString("sane_get_devices failed");
+      return;
+    }
+    for (size_t i = 0; device_list[i]; i++) {
+      PostString("sane_get_devices returned a device");
+      if (i > 4) {
+        PostString("sane_get_devices returned a device (abort!)");
+        return;
+      }
+    }
+    PostMessage("done listing devices");
     // TODO(sdk_user): 1. Make this function handle the incoming message.
   }
 };
@@ -436,5 +451,9 @@ int sigpending(sigset_t *set) {
 
   int sigblock(int mask) {
     return 0;
+  }
+
+  int sanei_sigprocmask(int how, const sigset_t *set, sigset_t *oldset) {
+    return -1;
   }
 }

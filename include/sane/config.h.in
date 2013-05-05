@@ -225,9 +225,6 @@
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
 
-/* Define to 1 if you have the `pthread_cancel' function. */
-#undef HAVE_PTHREAD_CANCEL
-
 /* Define to 1 if you have the `pthread_create' function. */
 #undef HAVE_PTHREAD_CREATE
 
@@ -242,9 +239,6 @@
 
 /* Define to 1 if you have the `pthread_kill' function. */
 #undef HAVE_PTHREAD_KILL
-
-/* Define to 1 if you have the `pthread_testcancel' function. */
-#undef HAVE_PTHREAD_TESTCANCEL
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
@@ -647,11 +641,10 @@ int isfdtype(int fd, int fdtype);
 #endif
 
 /* Prototype for sigprocmask */
-/*#ifndef HAVE_SIGPROCMASK
+#ifndef HAVE_SIGPROCMASK
 #define sigprocmask sanei_sigprocmask
-int sigprocmask (int how, const unsigned long *new, unsigned long *old);
+/*int sigprocmask (int how, int *new, int *old);*/
 #endif
-*/
 
 /* Prototype for snprintf */
 #ifndef HAVE_SNPRINTF
@@ -697,5 +690,3 @@ unsigned int usleep (unsigned int useconds);
 void vsyslog(int priority, const char *format, va_list args);
 #endif
 
-ssize_t pipe_read(int fd, void *buf, size_t count);
-ssize_t pipe_write(int fd, const void *buf, size_t count);

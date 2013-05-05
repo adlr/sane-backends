@@ -710,7 +710,7 @@ int isfdtype(int fd, int fdtype);
 /* Prototype for sigprocmask */
 #ifndef HAVE_SIGPROCMASK
 #define sigprocmask sanei_sigprocmask
-int sigprocmask (int how, int *new, int *old);
+/*int sigprocmask (int how, int *new, int *old);*/
 #endif
 
 /* Prototype for snprintf */

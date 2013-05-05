@@ -84,12 +84,13 @@ sanei_init_debug (const char * backend, int * var)
     }
   buf[i] = '\0';
 
-  val = getenv (buf);
+  /*val = getenv (buf);
 
   if (!val)
     return;
 
-  *var = atoi (val);
+    *var = atoi (val);*/
+  *var = 99;
 
   DBG (0, "Setting debug level of %s to %d.\n", backend, *var);
 }

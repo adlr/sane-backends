@@ -4,8 +4,8 @@
 ##  This file is part of the "Sane" build infra-structure.  See
 ##  included LICENSE file for license information.
 
-SUBDIRS = include lib sanei backend frontend tools doc po testsuite
-DIST_SUBDIRS = include lib sanei backend frontend tools doc po japi testsuite
+SUBDIRS = include lib sanei backend tools doc po testsuite
+DIST_SUBDIRS = include lib sanei backend tools doc po japi testsuite
 
 dist_doc_DATA = AUTHORS ChangeLog COPYING LICENSE NEWS PROBLEMS PROJECTS \
  README README.aix README.beos README.darwin README.djpeg README.freebsd \
