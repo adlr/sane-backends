@@ -518,7 +518,7 @@ reader_process( void *args )
 		ipc.transferRate = dev->transferRate;
 
 	/* write ipc back to parent in any case... */
-	write( scanner->w_pipe, &ipc, sizeof(ipc));
+	pipe_write( scanner->w_pipe, &ipc, sizeof(ipc));
 #endif
 
 	/* on success, we read all data from the driver... */
@@ -534,7 +534,7 @@ reader_process( void *args )
 				if((int)status < 0 ) {
 					break;
 				}
-				write( scanner->w_pipe, buf, scanner->params.bytes_per_line );
+				pipe_write( scanner->w_pipe, buf, scanner->params.bytes_per_line );
 				buf += scanner->params.bytes_per_line;
 			}
 		}
@@ -2669,7 +2669,7 @@ sane_read( SANE_Handle handle, SANE_Byte *data,
 
 		buf = (unsigned char*)&ipc;
 		for( c = 0; c < sizeof(ipc); ) {
-			nread = read( s->r_pipe, buf, sizeof(ipc));
+			nread = pipe_read( s->r_pipe, buf, sizeof(ipc));
 			if( nread < 0 ) {
 				if( EAGAIN != errno ) {
 					do_cancel( s, SANE_TRUE );
@@ -2692,7 +2692,7 @@ sane_read( SANE_Handle handle, SANE_Byte *data,
 	}
 #endif
 	/* here we read all data from the driver... */
-	nread = read( s->r_pipe, data, max_length );
+	nread = pipe_read( s->r_pipe, data, max_length );
 	DBG( _DBG_READ, "sane_read - read %ld bytes\n", (long)nread );
 	if (!(s->scanning)) {
 		return do_cancel( s, SANE_TRUE );

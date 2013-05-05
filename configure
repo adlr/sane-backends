@@ -7280,7 +7280,7 @@ fi
        have_pthread=yes
        save_LIBS="$LIBS"
        LIBS="$LIBS $PTHREAD_LIBS"
-       for ac_func in pthread_create pthread_kill pthread_join pthread_detach pthread_cancel pthread_testcancel
+       for ac_func in pthread_create pthread_kill pthread_join pthread_detach
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -17701,7 +17701,7 @@ fi
 
 ALL_BACKENDS="abaton agfafocus apple artec artec_eplus48u as6e \
         avision bh canon canon630u canon_dr canon_pp cardscan \
-        coolscan coolscan2 coolscan3 dc25 dc210 dc240 \
+        coolscan coolscan2 coolscan3 dc210 dc240 \
         dell1600n_net dmc epjitsu epson epson2 fujitsu genesys \
         gphoto2 gt68xx hp hp3500 hp3900 hp4200 hp5400 \
         hp5590 hpsj5s hpljm1005 hs2p ibm kodak kodakaio kvs1025 kvs20xx \

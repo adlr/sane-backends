@@ -252,7 +252,7 @@ AC_DEFUN([SANE_CHECK_PTHREAD],
        have_pthread=yes
        save_LIBS="$LIBS"
        LIBS="$LIBS $PTHREAD_LIBS"
-       AC_CHECK_FUNCS([pthread_create pthread_kill pthread_join pthread_detach pthread_cancel pthread_testcancel],
+       AC_CHECK_FUNCS([pthread_create pthread_kill pthread_join pthread_detach],
 	,[ have_pthread=no; use_pthread=no ])
        LIBS="$save_LIBS"
     ],)

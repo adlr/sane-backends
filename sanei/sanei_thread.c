@@ -170,7 +170,8 @@ sanei_thread_kill( SANE_Pid pid )
 	DBG(2, "sanei_thread_kill() will kill %ld\n",
 	    sanei_thread_pid_to_long(pid));
 #ifdef USE_PTHREAD
-#if defined (__APPLE__) && defined (__MACH__)
+        /* TODO: use a better way to do pthread_kill on NaCl. */
+#if (defined (__APPLE__) && defined (__MACH__)) || defined (USE_PTHREAD)
 	return pthread_kill((pthread_t)pid, SIGUSR2);
 #else
 	return pthread_cancel((pthread_t)pid);
@@ -334,8 +335,8 @@ local_thread( void *arg )
 #else
 	int old;
 
-	pthread_setcancelstate( PTHREAD_CANCEL_ENABLE, &old );
-	pthread_setcanceltype ( PTHREAD_CANCEL_ASYNCHRONOUS, &old );
+	/*pthread_setcancelstate( PTHREAD_CANCEL_ENABLE, &old );
+          pthread_setcanceltype ( PTHREAD_CANCEL_ASYNCHRONOUS, &old );*/
 #endif
 
 	DBG( 2, "thread started, calling func() now...\n" );

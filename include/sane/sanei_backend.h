@@ -197,4 +197,15 @@ Option_Value;
 #define SANE_OPTION 1
 #endif
 
+/*union shortbytes {
+  unsigned short num;
+  unsigned char bytes[2];
+};
+
+unsigned short htons(unsigned short in) {
+  union shortbytes sb;
+  sb.num = in;
+  
+  }*/
+
 #endif  /* include guard */

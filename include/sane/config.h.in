@@ -697,3 +697,5 @@ unsigned int usleep (unsigned int useconds);
 void vsyslog(int priority, const char *format, va_list args);
 #endif
 
+ssize_t pipe_read(int fd, void *buf, size_t count);
+ssize_t pipe_write(int fd, const void *buf, size_t count);
