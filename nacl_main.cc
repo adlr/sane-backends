@@ -68,6 +68,12 @@ class HelloTutorialInstance : public pp::Instance {
   {}
   virtual ~HelloTutorialInstance() {}
 
+
+  void PostString(const std::string& str) {
+    pp::Var var_reply = pp::Var(str);
+    PostMessage(var_reply);
+  }
+
   /// Handler for messages coming in from the browser via postMessage().  The
   /// @a var_message can contain anything: a JSON string; a string that encodes
   /// method names and arguments; etc.  For example, you could use
@@ -81,9 +87,11 @@ class HelloTutorialInstance : public pp::Instance {
   /// @param[in] var_message The message posted by the browser.
   virtual void HandleMessage(const pp::Var& var_message) {
     SANE_Status x = sane_init(NULL, NULL);
-    SANE_Handle handle;
-    x = sane_open("DEV", &handle);
-    x = sane_start(handle);
+    if (x != SANE_STATUS_GOOD) {
+      PostString("sane_init failed");
+      return;
+    }
+    PostString("sane_init success");
     // TODO(sdk_user): 1. Make this function handle the incoming message.
   }
 };
