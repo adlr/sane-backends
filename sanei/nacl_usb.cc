@@ -1,8 +1,16 @@
 // copyright...
 
 #include <stdio.h>
+#include <string>
 
 #include <libusb.h>
+#include "ppapi/cpp/module.h"
+
+#include "sane/nacl_jscall.h"
+
+extern scanley::SynchronousJavaScriptCaller* g_js_caller;
+
+using std::string;
 
 #define ENTRY fprintf(stderr, "%s entered\n", __func__)
 
@@ -22,6 +30,13 @@ void libusb_exit(libusb_context *ctx) {
 ssize_t LIBUSB_CALL libusb_get_device_list(libusb_context *ctx,
                                            libusb_device ***list) {
   ENTRY;
+  if (!g_js_caller) {
+    fprintf(stderr, "no JS caller\n");
+    return 0;
+  }
+  string result = g_js_caller->Call("USB:FIND_DEVICES");
+  fprintf(stderr, "get devices, got js reply: %s\n", result.c_str());
+
   return 0;
 }
 void LIBUSB_CALL libusb_free_device_list(libusb_device **list,
@@ -118,3 +133,5 @@ int LIBUSB_CALL libusb_interrupt_transfer(libusb_device_handle *dev_handle,
   ENTRY;
   return 0;
 }
+
+scanley::SynchronousJavaScriptCaller* g_js_caller;

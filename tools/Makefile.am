@@ -5,7 +5,7 @@
 ##  included LICENSE file for license information.
 
 AM_CPPFLAGS = -I. -I$(srcdir) -I$(top_builddir)/include \
- -I$(top_srcdir)/include
+ -I$(top_srcdir)/include -I$(NACL_SDK_ROOT)/include
 
 bin_PROGRAMS = sane-find-scanner gamma4scanimage
 noinst_PROGRAMS = sane-desc umax_pp
@@ -29,20 +29,22 @@ CLEANFILES = $(bin_SCRIPTS) $(dist_noinst_SCRIPTS)
 EXTRA_DIST = check-po.awk libtool-get-dll-ext mustek600iin-off.c \
 	     RenSaneDlls.cmd README xerox
 
+# Force C++ linking:
+#nodist_EXTRA_sane_find_scanner_SOURCES = dummy.cc
 sane_find_scanner_SOURCES = sane-find-scanner.c check-usb-chip.c \
-			    ../backend/sane_strstatus.c
+			    ../backend/sane_strstatus.c nacl_dummy_main.cc
 sane_find_scanner_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la \
-			  @USB_LIBS@ @IEEE1284_LIBS@ @SCSI_LIBS@
+			  @USB_LIBS@ @IEEE1284_LIBS@ @SCSI_LIBS@ -lppapi_cpp -lppapi
 
 gamma4scanimage_SOURCES = gamma4scanimage.c
-gamma4scanimage_LDADD = @MATH_LIB@
+gamma4scanimage_LDADD = @MATH_LIB@ -lppapi_cpp -lppapi
 
 umax_pp_SOURCES = umax_pp.c ../backend/umax_pp_low.c
 umax_pp_CPPFLAGS = $(AM_CPPFLAGS) -DBACKEND_NAME=umax_pp_low
 umax_pp_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la @MATH_LIB@
 
 sane_desc_SOURCES = sane-desc.c
-sane_desc_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la
+sane_desc_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la -lppapi_cpp -lppapi
 
 EXTRA_DIST += hotplug/README hotplug/libusbscanner
 EXTRA_DIST += hotplug-ng/README hotplug-ng/libsane.hotplug

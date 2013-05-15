@@ -62,7 +62,8 @@ sane_desc_OBJECTS = $(am_sane_desc_OBJECTS)
 sane_desc_DEPENDENCIES = ../sanei/libsanei.la ../lib/liblib.la \
 	../lib/libfelib.la
 am_sane_find_scanner_OBJECTS = sane-find-scanner.$(OBJEXT) \
-	check-usb-chip.$(OBJEXT) sane_strstatus.$(OBJEXT)
+	check-usb-chip.$(OBJEXT) sane_strstatus.$(OBJEXT) \
+	nacl_dummy_main.$(OBJEXT)
 sane_find_scanner_OBJECTS = $(am_sane_find_scanner_OBJECTS)
 sane_find_scanner_DEPENDENCIES = ../sanei/libsanei.la ../lib/liblib.la \
 	../lib/libfelib.la
@@ -111,6 +112,15 @@ LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(gamma4scanimage_SOURCES) $(sane_desc_SOURCES) \
 	$(sane_find_scanner_SOURCES) $(umax_pp_SOURCES)
@@ -296,7 +306,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I. -I$(srcdir) -I$(top_builddir)/include \
- -I$(top_srcdir)/include
+ -I$(top_srcdir)/include -I$(NACL_SDK_ROOT)/include
 
 @CROSS_COMPILING_FALSE@HOTPLUG = hal/libsane.fdi hotplug/libsane.usermap hotplug-ng/libsane.db \
 @CROSS_COMPILING_FALSE@	  udev/libsane.rules
@@ -314,26 +324,29 @@ EXTRA_DIST = check-po.awk libtool-get-dll-ext mustek600iin-off.c \
 	RenSaneDlls.cmd README xerox hotplug/README \
 	hotplug/libusbscanner hotplug-ng/README \
 	hotplug-ng/libsane.hotplug openbsd/attach openbsd/detach
+
+# Force C++ linking:
+#nodist_EXTRA_sane_find_scanner_SOURCES = dummy.cc
 sane_find_scanner_SOURCES = sane-find-scanner.c check-usb-chip.c \
-			    ../backend/sane_strstatus.c
+			    ../backend/sane_strstatus.c nacl_dummy_main.cc
 
 sane_find_scanner_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la \
-			  @USB_LIBS@ @IEEE1284_LIBS@ @SCSI_LIBS@
+			  @USB_LIBS@ @IEEE1284_LIBS@ @SCSI_LIBS@ -lppapi_cpp -lppapi
 
 gamma4scanimage_SOURCES = gamma4scanimage.c
-gamma4scanimage_LDADD = @MATH_LIB@
+gamma4scanimage_LDADD = @MATH_LIB@ -lppapi_cpp -lppapi
 umax_pp_SOURCES = umax_pp.c ../backend/umax_pp_low.c
 umax_pp_CPPFLAGS = $(AM_CPPFLAGS) -DBACKEND_NAME=umax_pp_low
 umax_pp_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la @MATH_LIB@
 sane_desc_SOURCES = sane-desc.c
-sane_desc_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la
+sane_desc_LDADD = ../sanei/libsanei.la ../lib/liblib.la ../lib/libfelib.la -lppapi_cpp -lppapi
 pkgconfigdir = @libdir@/pkgconfig
 pkgconfig_DATA = sane-backends.pc
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .cc .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -428,7 +441,7 @@ sane-desc$(EXEEXT): $(sane_desc_OBJECTS) $(sane_desc_DEPENDENCIES) $(EXTRA_sane_
 	$(LINK) $(sane_desc_OBJECTS) $(sane_desc_LDADD) $(LIBS)
 sane-find-scanner$(EXEEXT): $(sane_find_scanner_OBJECTS) $(sane_find_scanner_DEPENDENCIES) $(EXTRA_sane_find_scanner_DEPENDENCIES) 
 	@rm -f sane-find-scanner$(EXEEXT)
-	$(LINK) $(sane_find_scanner_OBJECTS) $(sane_find_scanner_LDADD) $(LIBS)
+	$(CXXLINK) $(sane_find_scanner_OBJECTS) $(sane_find_scanner_LDADD) $(LIBS)
 umax_pp$(EXEEXT): $(umax_pp_OBJECTS) $(umax_pp_DEPENDENCIES) $(EXTRA_umax_pp_DEPENDENCIES) 
 	@rm -f umax_pp$(EXEEXT)
 	$(LINK) $(umax_pp_OBJECTS) $(umax_pp_LDADD) $(LIBS)
@@ -473,6 +486,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check-usb-chip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamma4scanimage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nacl_dummy_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sane-desc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sane-find-scanner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sane_strstatus.Po@am__quote@
@@ -541,6 +555,27 @@ umax_pp-umax_pp_low.obj: ../backend/umax_pp_low.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../backend/umax_pp_low.c' object='umax_pp-umax_pp_low.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(umax_pp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o umax_pp-umax_pp_low.obj `if test -f '../backend/umax_pp_low.c'; then $(CYGPATH_W) '../backend/umax_pp_low.c'; else $(CYGPATH_W) '$(srcdir)/../backend/umax_pp_low.c'; fi`
+
+.cc.o:
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
+
+.cc.obj:
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.cc.lo:
+@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
 mostlyclean-libtool:
 	-rm -f *.lo

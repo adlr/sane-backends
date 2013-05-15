@@ -41,13 +41,18 @@
 #include "ppapi/cpp/module.h"
 #include "ppapi/cpp/var.h"
 
+#include "sane/nacl_jscall.h"
+#include "sane/nacl_util.h"
 #include "sane/sane.h"
 
+extern scanley::SynchronousJavaScriptCaller* g_js_caller;
+
 using std::map;
+using std::string;
 using std::vector;
 using std::tr1::shared_ptr;
 
-namespace adlr {
+namespace scanley {
 class FakePipeManager;
 }
 
@@ -64,14 +69,33 @@ class HelloTutorialInstance : public pp::Instance {
  public:
   /// The constructor creates the plugin-side instance.
   /// @param[in] instance the handle to the browser-side plugin instance.
-  explicit HelloTutorialInstance(PP_Instance instance) : pp::Instance(instance)
-  {}
+  explicit HelloTutorialInstance(PP_Instance instance)
+      : pp::Instance(instance), js_caller_(this) {
+    if (!g_js_caller)
+      g_js_caller = &js_caller_;
+  }
   virtual ~HelloTutorialInstance() {}
-
 
   void PostString(const std::string& str) {
     pp::Var var_reply = pp::Var(str);
     PostMessage(var_reply);
+  }
+
+  // Returns true if handled
+  bool HandleJSCallReply(const pp::Var& msg) {
+    if (!msg.is_string())
+      return false;
+    string str = msg.AsString();
+    size_t idx = 0;
+    int rc = sscanf(str.c_str(), "%zu:", &idx);
+    if (rc <= 0)
+      return false;
+    size_t colon = str.find(':');
+    if (colon == string::npos)
+      return false;
+    string after_colon = str.substr(colon + 1);
+    js_caller_.HandleReply(idx, after_colon);
+    return true;
   }
 
   /// Handler for messages coming in from the browser via postMessage().  The
@@ -85,7 +109,10 @@ class HelloTutorialInstance : public pp::Instance {
   /// retrieve the method name, match it to a function call, and then call it
   /// with the parameter.
   /// @param[in] var_message The message posted by the browser.
-  virtual void HandleMessage(const pp::Var& var_message) {
+  virtual void HandleMessage(const pp::Var& msg) {
+    if (HandleJSCallReply(msg))
+      return;
+
     printf("about to call sane_init\n");
     SANE_Status rc = sane_init(NULL, NULL);
     if (rc != SANE_STATUS_GOOD) {
@@ -109,6 +136,8 @@ class HelloTutorialInstance : public pp::Instance {
     PostMessage("done listing devices");
     // TODO(sdk_user): 1. Make this function handle the incoming message.
   }
+ private:
+  scanley::SynchronousJavaScriptCaller js_caller_;
 };
 
 /// The Module class.  The browser calls the CreateInstance() method to create
@@ -138,26 +167,9 @@ Module* CreateModule() {
 }
 }  // namespace pp
 
-namespace adlr {
+namespace scanley {
 
 const size_t kBufBytes = 64 * 1024;
-
-class ScopedPthreadLock {
- public:
-  explicit ScopedPthreadLock(pthread_mutex_t* mutex)
-      : mutex_(mutex) {
-    int rc = pthread_mutex_lock(mutex);
-    if (rc)
-      printf("pthread_mutex_lock: %d (ERR)\n", rc);
-  }
-  ~ScopedPthreadLock() {
-    int rc = pthread_mutex_unlock(mutex_);
-    if (rc)
-      printf("pthread_mutex_unlock: %d (ERR)\n", rc);
-  }
- private:
-  pthread_mutex_t* mutex_;
-};
 
 class FakePipe {
  public:
@@ -264,11 +276,6 @@ ssize_t FakePipe::Read(unsigned char* buf, size_t len) {
   return len;  // full read success
 }
 
-template<typename Map, typename Key>
-bool MapContainsKey(const Map& the_map, const Key& the_key) {
-  return the_map.find(the_key) != the_map.end();
-}
-
 class FakePipeManager {
  public:
   FakePipeManager();
@@ -361,10 +368,10 @@ int FakePipeManager::FcntlF_SETFL(int fd, long flags) {
   return 0;
 }
 
-}  // namespace adlr
+}  // namespace scanley
 
-using adlr::FakePipeManager;
-using adlr::ScopedPthreadLock;
+using scanley::FakePipeManager;
+using scanley::ScopedPthreadLock;
 
 namespace {
 
