@@ -54,7 +54,33 @@ using std::tr1::shared_ptr;
 
 namespace scanley {
 class FakePipeManager;
+
+void *LaunchSane(void *args) {
+  printf("about to call sane_init\n");
+  SANE_Status rc = sane_init(NULL, NULL);
+  if (rc != SANE_STATUS_GOOD) {
+    printf("sane_init failed");
+    return NULL;
+  }
+  printf("sane_init success2\n");
+  const SANE_Device** device_list;
+  rc = sane_get_devices(&device_list, SANE_TRUE);  // true = local only
+  if (rc != SANE_STATUS_GOOD) {
+    printf("sane_get_devices failed\n");
+    return NULL;
+  }
+  for (size_t i = 0; device_list[i]; i++) {
+    printf("sane_get_devices returned a device\n");
+    if (i > 4) {
+      printf("sane_get_devices returned a device (abort!)\n");
+      return NULL;
+    }
+  }
+  printf("done listing devices\n");
+  // TODO(sdk_user): 1. Make this function handle the incoming message.
 }
+}  // namespace scanley
+
 
 /// The Instance class.  One of these exists for each instance of your NaCl
 /// module on the web page.  The browser will ask the Module object to create
@@ -66,6 +92,9 @@ class FakePipeManager;
 /// receiving messages from the browser, and use PostMessage() to send messages
 /// back to the browser.  Note that this interface is asynchronous.
 class HelloTutorialInstance : public pp::Instance {
+ private:
+  pthread_t sane_thread_;
+
  public:
   /// The constructor creates the plugin-side instance.
   /// @param[in] instance the handle to the browser-side plugin instance.
@@ -73,6 +102,11 @@ class HelloTutorialInstance : public pp::Instance {
       : pp::Instance(instance), js_caller_(this) {
     if (!g_js_caller)
       g_js_caller = &js_caller_;
+    int rc = pthread_create(&sane_thread_, NULL, scanley::LaunchSane, NULL);
+    if (rc) {
+      printf("pthread_create returned: %d\n", rc);
+      PostString("pthread_create failed");
+    }
   }
   virtual ~HelloTutorialInstance() {}
 
@@ -86,6 +120,7 @@ class HelloTutorialInstance : public pp::Instance {
     if (!msg.is_string())
       return false;
     string str = msg.AsString();
+    printf("Got message: [%s]\n", str.c_str());
     size_t idx = 0;
     int rc = sscanf(str.c_str(), "%zu:", &idx);
     if (rc <= 0)
@@ -113,28 +148,6 @@ class HelloTutorialInstance : public pp::Instance {
     if (HandleJSCallReply(msg))
       return;
 
-    printf("about to call sane_init\n");
-    SANE_Status rc = sane_init(NULL, NULL);
-    if (rc != SANE_STATUS_GOOD) {
-      PostString("sane_init failed");
-      return;
-    }
-    PostString("sane_init success2");
-    const SANE_Device** device_list;
-    rc = sane_get_devices(&device_list, SANE_TRUE);  // true = local only
-    if (rc != SANE_STATUS_GOOD) {
-      PostString("sane_get_devices failed");
-      return;
-    }
-    for (size_t i = 0; device_list[i]; i++) {
-      PostString("sane_get_devices returned a device");
-      if (i > 4) {
-        PostString("sane_get_devices returned a device (abort!)");
-        return;
-      }
-    }
-    PostMessage("done listing devices");
-    // TODO(sdk_user): 1. Make this function handle the incoming message.
   }
  private:
   scanley::SynchronousJavaScriptCaller js_caller_;
