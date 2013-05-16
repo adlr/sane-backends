@@ -94,19 +94,15 @@ void *LaunchSane(void *args) {
 class HelloTutorialInstance : public pp::Instance {
  private:
   pthread_t sane_thread_;
+  bool started_;
 
  public:
   /// The constructor creates the plugin-side instance.
   /// @param[in] instance the handle to the browser-side plugin instance.
   explicit HelloTutorialInstance(PP_Instance instance)
-      : pp::Instance(instance), js_caller_(this) {
+      : pp::Instance(instance), started_(false), js_caller_(this) {
     if (!g_js_caller)
       g_js_caller = &js_caller_;
-    int rc = pthread_create(&sane_thread_, NULL, scanley::LaunchSane, NULL);
-    if (rc) {
-      printf("pthread_create returned: %d\n", rc);
-      PostString("pthread_create failed");
-    }
   }
   virtual ~HelloTutorialInstance() {}
 
@@ -148,6 +144,14 @@ class HelloTutorialInstance : public pp::Instance {
     if (HandleJSCallReply(msg))
       return;
 
+    if (started_)
+      return;
+    started_ = true;
+    int rc = pthread_create(&sane_thread_, NULL, scanley::LaunchSane, NULL);
+    if (rc) {
+      printf("pthread_create returned: %d\n", rc);
+      PostString("pthread_create failed");
+    }
   }
  private:
   scanley::SynchronousJavaScriptCaller js_caller_;

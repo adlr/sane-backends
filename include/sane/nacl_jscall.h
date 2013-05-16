@@ -12,12 +12,13 @@
 
 namespace scanley {
 
-class SynchronousJavaScriptCaller : public pp::CompletionCallback {
+class SynchronousJavaScriptCaller {
  public:
   explicit SynchronousJavaScriptCaller(pp::Instance* instance);
 
   // Run on main thread
-  void Run(int32_t result);
+  static void StaticRun(void* self, int32_t unused);
+  void Run();
 
   // The main Call method, used by non-main thread to synchronously call JS
   std::string Call(const std::string& request);
