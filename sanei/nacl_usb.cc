@@ -14,6 +14,13 @@ using std::string;
 
 #define ENTRY fprintf(stderr, "%s entered\n", __func__)
 
+struct libusb_device {
+  int js_id;
+
+  uint16_t vendor_id;
+  uint16_t product_id;
+};
+
 int libusb_init(libusb_context **ctx) {
   ENTRY;
   return 0;
