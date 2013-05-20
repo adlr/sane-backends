@@ -71,7 +71,6 @@
 # endif
 #endif
 
-
 #ifdef HAVE_RESMGR
 #include <resmgr.h>
 #endif
@@ -87,6 +86,10 @@
 #ifdef HAVE_LIBUSB_1_0
 #include <libusb.h>
 #endif /* HAVE_LIBUSB_1_0 */
+
+#ifdef NACL
+#include "nacl_usb.h"
+#endif /* NACL */
 
 #ifdef HAVE_USBCALLS
 #include <usb.h>
@@ -163,6 +166,9 @@ typedef struct
   libusb_device *lu_device;
   libusb_device_handle *lu_handle;
 #endif /* HAVE_LIBUSB_1_0 */
+#ifdef NACL
+  nacl_usb_dev *nacl_usb_dev_handle;
+#endif
 }
 device_list_type;
 
@@ -269,7 +275,7 @@ print_buffer (const SANE_Byte * buffer, SANE_Int size)
     }
 }
 
-#if !defined(HAVE_LIBUSB) && !defined(HAVE_LIBUSB_1_0)
+#if !defined(HAVE_LIBUSB) && !defined(HAVE_LIBUSB_1_0) && !defined(NACL)
 static void
 kernel_get_vendor_product (int fd, const char *name, int *vendorID, int *productID)
 {
@@ -374,6 +380,9 @@ store_device (device_list_type device)
 #endif
 #ifdef HAVE_LIBUSB_1_0
           devices[i].lu_device = device.lu_device;
+#endif
+#ifdef NACL
+          devices[i].nacl_usb_dev_handle = device.nacl_usb_dev_handle;
 #endif
 
           devices[i].missing=0;
@@ -647,7 +656,7 @@ static void usbcall_scan_devices(void)
 }
 #endif /* HAVE_USBCALLS */
 
-#if !defined(HAVE_LIBUSB) && !defined(HAVE_LIBUSB_1_0)
+#if !defined(HAVE_LIBUSB) && !defined(HAVE_LIBUSB_1_0) && !defined(NACL)
 /** scan for devices using kernel device.
  * Check for devices using kernel device
  */
@@ -1035,6 +1044,18 @@ static void libusb_scan_devices(void)
 }
 #endif /* HAVE_LIBUSB_1_0 */
 
+#ifdef NACL
+static void nacl_usb_scan_devices (void)
+{
+  nacl_usb_dev* devices = NULL;
+  nacl_usb_get_devices(&devices);
+  for (devices; devices++) {
+    device_list_type device = {0};
+    devices.
+  }
+  nacl_usb_get_devices_free(devices);
+}
+#endif /* NACL */
 
 void
 sanei_usb_scan_devices (void)
@@ -1059,13 +1080,17 @@ sanei_usb_scan_devices (void)
     }
 
   /* Check for devices using the kernel scanner driver */
-#if !defined(HAVE_LIBUSB) && !defined(HAVE_LIBUSB_1_0)
+#if !defined(HAVE_LIBUSB) && !defined(HAVE_LIBUSB_1_0) && !defined(NACL)
   kernel_scan_devices();
 #endif
 
 #if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
   /* Check for devices using libusb (old or new)*/
   libusb_scan_devices();
+#endif
+
+#ifdef NACL
+  nacl_usb_scan_devices();
 #endif
 
 #ifdef HAVE_USBCALLS

@@ -690,3 +690,6 @@ unsigned int usleep (unsigned int useconds);
 void vsyslog(int priority, const char *format, va_list args);
 #endif
 
+#ifdef __native_client__
+#define NACL
+#endif

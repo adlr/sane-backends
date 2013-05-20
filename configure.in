@@ -374,6 +374,9 @@ if test "$enable_libusb" != "no"; then
   beos*)
   AC_CHECK_HEADERS(be/drivers/USB_scanner.h, HAVE_USB=yes, AC_MSG_ERROR([USB_scanner.h is required on BeOS]))
   ;;
+  nacl*)
+  HAVE_USB=yes
+  ;;
   os2*)
   AC_CHECK_HEADER(usbcalls.h,
 		  AC_CHECK_LIB(usbcall, UsbQueryNumberDevices, 
@@ -422,6 +425,8 @@ if test "$HAVE_USB" = "yes"; then
   os2*)
   AC_DEFINE(HAVE_USBCALLS, 1, [Define to 1 if you have usbcall.dll.])
   ;;
+  nacl*)
+  ;;    
   *)
   if test "$have_libusb_1_0" = "yes"; then
     AC_DEFINE(HAVE_LIBUSB_1_0, 1, [Define to 1 if you have libusb-1.0.])

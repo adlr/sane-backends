@@ -10133,6 +10133,9 @@ fi
 done
 
   ;;
+  nacl*)
+  HAVE_USB=yes
+  ;;
   os2*)
   ac_fn_c_check_header_compile "$LINENO" "usbcalls.h" "ac_cv_header_usbcalls_h" "#include <usb.h>
 #include <os2.h>
@@ -10377,6 +10380,8 @@ if test "$HAVE_USB" = "yes"; then
 
 $as_echo "#define HAVE_USBCALLS 1" >>confdefs.h
 
+  ;;
+  nacl*)
   ;;
   *)
   if test "$have_libusb_1_0" = "yes"; then
